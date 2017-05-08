@@ -196,14 +196,65 @@ public static boolean UjArVan = false;
     }
     }
     
-    public static void hetiKalk(){
+    public static void hetiKalk() throws IOException{
         System.out.println("*******************************");
         System.out.println("******* HETI KALKULATOR *******");
         System.out.println("*******************************");
-        System.out.println("Kerem, irja be az utolso km allast!");
-        System.out.println("Kerem, irja be a jelenlegi km allast!");
-        System.out.println("Hany liter uzemanyagot tankolt a heten?");
-        System.out.println("A fogyasztas x liter volt.");
+        String[] Napok = new String[7];
+        Double[] NapiAllas = new Double[7];
+        
+            Napok[0] = "Hétfő";
+            Napok[1] = "Kedd";
+            Napok[2] = "Szerda";
+            Napok[3] = "Csütörtök";
+            Napok[4] = "Péntek";
+            Napok[5] = "Szombat";
+            Napok[6] = "Vasárnap";
+            
+        Double TankoltUzemanyag = 0.0;
+        
+        System.out.println("Kerem, adja meg a napi km.allasokat, majd nyomjon enter!");
+        
+        for(int napiszamlalo = 0; napiszamlalo < Napok.length; napiszamlalo++){
+            boolean kilep = false;
+            while(kilep != true){
+                System.out.print(Napok[napiszamlalo]+":");
+                InputStreamReader in = new InputStreamReader(System.in);
+                BufferedReader buf = new BufferedReader(in);
+                String tempnapi = buf.readLine();
+                try {
+                    Double napikm = Double.parseDouble(tempnapi);
+                    NapiAllas[napiszamlalo] = napikm;
+                    System.out.println(Napok[napiszamlalo] + ":" + NapiAllas[napiszamlalo] + "km.");
+                    kilep = true;
+                    
+                }catch (NumberFormatException ex) {
+                    System.out.println("Ervenytelen km allas! Probalja ujra!");
+                    kilep = false;
+                }
+                if(kilep) break;
+            }
+        }
+        System.out.println("*******************************");
+        Double SzumNapiKm = NapiAllas[0]+NapiAllas[1]+NapiAllas[2]+NapiAllas[3]+NapiAllas[4]+NapiAllas[5]+NapiAllas[6];
+        System.out.println("Ez összesen:" + SzumNapiKm + " km a heten.");
+        System.out.println("*******************************");
+        boolean kilep2 = false;
+        while(kilep2 != true){
+            System.out.print("Mennyit tankolt a heten?:");
+            InputStreamReader in = new InputStreamReader(System.in);
+            BufferedReader buf = new BufferedReader(in);
+            String temptankolt = buf.readLine();
+            try {
+                Double tankolt = Double.parseDouble(temptankolt);
+                System.out.println("Tankolt uzemanyag:" + tankolt+" l.");
+                kilep2 = true;        
+            }catch (NumberFormatException ex) {
+                System.out.println("Ervenytelen ertek! Probalja ujra!");
+                kilep2 = false;
+            }
+            if(kilep2) break;
+        }
         System.out.println("https://www.gyakorikerdesek.hu/kozlekedes__autok-motorok__1367446-hogy-szamitom-ki-a-fogyasztast-100-km-re");
     }        
     
