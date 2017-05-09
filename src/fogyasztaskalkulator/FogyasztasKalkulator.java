@@ -22,6 +22,18 @@ public static final String[] Fajtak = new String[4];
 public static boolean UjArVan = false;
 
     public static void main(String[] args) throws IOException {
+        if(UjArVan == false){
+            Arak[0] = 354;   
+            Arak[1] = 355;
+            Arak[2] = 391;
+            Arak[3] = 217; 
+        }
+        
+        Fajtak[0] = "95-os benzin";
+        Fajtak[1] = "Dizel";
+        Fajtak[2] = "Keverek";
+        Fajtak[3] = "LPG";   
+        
         fomenu(true);
     }
      
@@ -75,21 +87,9 @@ public static boolean UjArVan = false;
     }
     
     public static void beallitasok(int opcio, int uzemanyag, int ujar) throws IOException{
-        Fajtak[0] = "95-os benzin";
-        Fajtak[1] = "Dizel";
-        Fajtak[2] = "Keverek";
-        Fajtak[3] = "LPG";   
-
         if(ujar != 0){
             Arak[uzemanyag] = ujar;
         } 
-        
-        if(UjArVan == false){
-            Arak[0] = 354;   
-            Arak[1] = 355;
-            Arak[2] = 391;
-            Arak[3] = 217; 
-        }
         
         if(opcio == 0){
             System.out.println("*******************************");
@@ -174,6 +174,7 @@ public static boolean UjArVan = false;
                 int newar = 0;
                 try {
                     newar = Integer.parseInt(tempar);
+                    if(newar < 0) throw new NumberFormatException();
                 }catch (NumberFormatException ex) {
                     System.out.println("Ervenytelen ar! Probalja ujra!");
                     kilep = false;
@@ -224,6 +225,7 @@ public static boolean UjArVan = false;
                 String tempnapi = buf.readLine();
                 try {
                     Double napikm = Double.parseDouble(tempnapi);
+                    if(napikm < 0) throw new NumberFormatException();
                     NapiAllas[napiszamlalo] = napikm;
                     System.out.println(Napok[napiszamlalo] + ":" + NapiAllas[napiszamlalo] + "km.");
                     kilep = true;
@@ -240,22 +242,43 @@ public static boolean UjArVan = false;
         System.out.println("Ez összesen:" + SzumNapiKm + " km a heten.");
         System.out.println("*******************************");
         boolean kilep2 = false;
+        Double tankolt = null;
         while(kilep2 != true){
             System.out.print("Mennyit tankolt a heten?:");
             InputStreamReader in = new InputStreamReader(System.in);
             BufferedReader buf = new BufferedReader(in);
             String temptankolt = buf.readLine();
             try {
-                Double tankolt = Double.parseDouble(temptankolt);
-                System.out.println("Tankolt uzemanyag:" + tankolt+" l.");
-                kilep2 = true;        
+                tankolt = Double.parseDouble(temptankolt);                
+                if(tankolt < 0) throw new NumberFormatException();
+                System.out.println("Tankolt uzemanyag mennyisege:" + tankolt +" l.");
+                kilep2 = true;
             }catch (NumberFormatException ex) {
                 System.out.println("Ervenytelen ertek! Probalja ujra!");
                 kilep2 = false;
             }
             if(kilep2) break;
         }
-        System.out.println("https://www.gyakorikerdesek.hu/kozlekedes__autok-motorok__1367446-hogy-szamitom-ki-a-fogyasztast-100-km-re");
+        System.out.println("A fogyasztás így: " + (tankolt/SzumNapiKm)*100 + " l, 100km-en.");
+        boolean kilep3 = false;
+        Double osszeg = 0.0;
+        while(kilep3 != true){
+            System.out.print("Milyen uzemanyagot tankolt? (1-2-3-4)");
+            InputStreamReader in2 = new InputStreamReader(System.in);
+            BufferedReader buf2 = new BufferedReader(in2);
+            String tempfajta = buf2.readLine();
+            try {
+                int fajta = Integer.parseInt(tempfajta);                
+                //if((fajta < 0) || (fajta != 1) || (fajta != 2) || (fajta != 3) || (fajta != 4)) throw new NumberFormatException();
+                System.out.println("A tankolt uzemanyag:" + fajta +", " + Fajtak[fajta] + ".");
+                osszeg = ((tankolt/SzumNapiKm)*100)*Arak[fajta];
+                System.out.println("Ez igy " + osszeg + " HUF.");
+                kilep3 = true;   
+            }catch (NumberFormatException ex) {
+                System.out.println("Ervenytelen ertek! Probalja ujra!");
+                kilep3 = false;
+            }
+        }
     }        
     
     public static void mennyiLesz(){
