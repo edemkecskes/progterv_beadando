@@ -13,8 +13,6 @@ import java.io.InputStreamReader;
  *
  * @author akecskes
  */
-
-
 public class FogyasztasKalkulator {
     
 public static final Integer[] Arak = new Integer[4];
@@ -240,6 +238,13 @@ public static boolean UjArVan = false;
         System.out.println("*******************************");
         Double SzumNapiKm = NapiAllas[0]+NapiAllas[1]+NapiAllas[2]+NapiAllas[3]+NapiAllas[4]+NapiAllas[5]+NapiAllas[6];
         System.out.println("Ez összesen:" + SzumNapiKm + " km a heten.");
+        Double max = 0.0;
+        for(int i = 0; i < NapiAllas.length; i++){
+            if(NapiAllas[i] > max){
+		max = NapiAllas[i];
+            }
+        }
+        System.out.println("Legnagyobb megtett tavolsag: " + max + " km.");
         System.out.println("*******************************");
         boolean kilep2 = false;
         Double tankolt = null;
@@ -259,18 +264,19 @@ public static boolean UjArVan = false;
             }
             if(kilep2) break;
         }
-        System.out.println("A fogyasztás így: " + (tankolt/SzumNapiKm)*100 + " l, 100km-en.");
+        System.out.println("A fogyasztás igy: " + (tankolt/SzumNapiKm)*100 + " l, 100km-en.");
         boolean kilep3 = false;
         Double osszeg = 0.0;
         while(kilep3 != true){
-            System.out.print("Milyen uzemanyagot tankolt? (1-2-3-4)");
+            System.out.print("Milyen uzemanyagot tankolt? (1: 95-os benzin - 2: Dizel - 3: Keverek - 4: LPG)");
             InputStreamReader in2 = new InputStreamReader(System.in);
             BufferedReader buf2 = new BufferedReader(in2);
             String tempfajta = buf2.readLine();
             try {
                 int fajta = Integer.parseInt(tempfajta);                
+                //DEBUG!
                 //if((fajta < 0) || (fajta != 1) || (fajta != 2) || (fajta != 3) || (fajta != 4)) throw new NumberFormatException();
-                System.out.println("A tankolt uzemanyag:" + fajta +", " + Fajtak[fajta] + ".");
+                System.out.println("A tankolt uzemanyag:" + fajta +",ami " + Fajtak[fajta-1] + ".");
                 osszeg = ((tankolt/SzumNapiKm)*100)*Arak[fajta];
                 System.out.println("Ez igy " + osszeg + " HUF.");
                 kilep3 = true;   
@@ -279,20 +285,115 @@ public static boolean UjArVan = false;
                 kilep3 = false;
             }
         }
+        boolean kilep4 = false;
+        System.out.println("Visszateres a fomenube: n, majd enter.");
+        System.out.println("Uj kalkulaciohoz u, majd enter es kövesse az utasitasokat.");
+        String visszamenu = "";
+        while((visszamenu != "u") || (visszamenu != "n")){
+            System.out.print("Valasztott opcio? ");
+            InputStreamReader in = new InputStreamReader(System.in);
+            BufferedReader buf = new BufferedReader(in);
+            visszamenu = buf.readLine();
+            boolean kilep = false;
+            switch(visszamenu){
+                case "u": hetiKalk();
+                kilep4 = true;
+                break;
+                case "n": fomenu(false);
+                kilep4 = true;
+                break;
+                default: System.out.println("Ervenytelen menupont!");
+                break;
+            }
+            if(kilep4) break;
+            }
     }        
     
-    public static void mennyiLesz(){
+    public static void mennyiLesz() throws IOException{
         System.out.println("*******************************");
         System.out.println("******* MENNYI LESZ.... *******");
         System.out.println("*******************************");
-        System.out.println("https://szamoldki.hu/hu/kalkulator/auto-fogyasztasi-koltseg-kalkulator");
-        for(int asd = 0; asd < Arak.length; asd++){
-            System.out.println(Arak[asd]);
+        boolean break1 = false;
+        boolean break2 = false;
+        boolean break3 = false;
+        boolean break4 = false;
+        System.out.println("A tervezett fogyasztas kiszamitasahoz, kerem, adja meg a kovetkezo adatokat!");
+        Double TervUtHossza = null;
+        while(break1 != true){
+            System.out.print("Kerem, adja meg a tervezett ut hosszat km-ben! ");
+            InputStreamReader in = new InputStreamReader(System.in);
+            BufferedReader buf = new BufferedReader(in);
+            String TempTervUtHossza = buf.readLine();
+            try {
+                TervUtHossza = Double.parseDouble(TempTervUtHossza);
+                if(TervUtHossza < 0) throw new NumberFormatException();
+                System.out.println("A tervezett ut hossza: " + TervUtHossza + " km.");
+                break1 = true;   
+            }catch (NumberFormatException ex) {
+                System.out.println("Ervenytelen ertek! Probalja ujra!");
+                break1 = false;
+            }
+            if(break1) break;
+        }
+        int fajta = 0;
+        while(break2 != true){
+            System.out.print("Milyen uzemanyagot hasznal? (1: 95-os benzin - 2: Dizel - 3: Keverek - 4: LPG)");
+            InputStreamReader in2 = new InputStreamReader(System.in);
+            BufferedReader buf2 = new BufferedReader(in2);
+            String tempfajta = buf2.readLine();
+            try {
+                fajta = Integer.parseInt(tempfajta);                
+                // DEBUG!
+                //if((fajta < 0) || (tempfajta != "1") || (tempfajta != "2") || (tempfajta != "3") || (tempfajta != "4")) throw new NumberFormatException();
+                System.out.println("A hasznalt uzemanyag:" + fajta +",ami " + Fajtak[fajta-1] + ".");
+                break2 = true;   
+            }catch (NumberFormatException ex) {
+                System.out.println("Ervenytelen ertek! Probalja ujra!");
+                break2 = false;
+            }            
+            if(break2) break;
+        }
+        Double fogyi = null;
+        while(break3 != true){
+            System.out.println("A gepkocsi adott utszakaszon jellemzo atlagfogyasztasa?");
+            InputStreamReader in3 = new InputStreamReader(System.in);
+            BufferedReader buf3 = new BufferedReader(in3);
+            String tempfogyi = buf3.readLine();
+            try {
+                fogyi = Double.parseDouble(tempfogyi);
+                System.out.println("A megadott fogyasztas: " + fogyi + " l/100km.");
+                break3 = true;
+            }catch (NumberFormatException ex) {
+                System.out.println("Ervenytelen ertek! Probalja ujra!");
+                break3 = false;
+            }
+            if(break3) break;
+        }
+        Double VegEredmeny = (TervUtHossza*fogyi)*(Arak[fajta]/100);
+        System.out.println("A megadott adatok alapjan, ez az ut kb. " + VegEredmeny + "HUF lesz.");
+        System.out.println("Visszateres a fomenube: n, majd enter.");
+        System.out.println("Uj kalkulaciohoz u, majd enter es kövesse az utasitasokat.");
+        String visszamenu = "";
+        while((visszamenu != "u") || (visszamenu != "n")){
+            System.out.print("Valasztott opcio? ");
+            InputStreamReader in = new InputStreamReader(System.in);
+            BufferedReader buf = new BufferedReader(in);
+            visszamenu = buf.readLine();
+            switch(visszamenu){
+                case "u": mennyiLesz();
+                break4 = true;
+                break;
+                case "n": fomenu(false);
+                break4 = true;
+                break;
+                default: System.out.println("Ervenytelen menupont!");
+                break;
+            }
+            if(break4) break;
         }
     }
    
     public static void kilepes(){
-        System.out.println("Bye! :)");
         System.exit(0);
     }
 }
