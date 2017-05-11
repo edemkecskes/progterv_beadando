@@ -277,7 +277,7 @@ public static boolean UjArVan = false;
                 //DEBUG!
                 //if((fajta < 0) || (fajta != 1) || (fajta != 2) || (fajta != 3) || (fajta != 4)) throw new NumberFormatException();
                 System.out.println("A tankolt uzemanyag:" + fajta +",ami " + Fajtak[fajta-1] + ".");
-                osszeg = ((tankolt/SzumNapiKm)*100)*Arak[fajta];
+                osszeg = (SzumNapiKm/tankolt)*(Arak[fajta]/100);
                 System.out.println("Ez igy " + osszeg + " HUF.");
                 kilep3 = true;   
             }catch (NumberFormatException ex) {
